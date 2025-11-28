@@ -1,10 +1,24 @@
 using System;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace WinFormsApp1
 {
     public partial class Form3 : Form
     {
+        public static string[] Books = new string[]
+        {
+            "The Hobbit","Sherlock Holmes","1984","Pride and Prejudice","Harry Potter",
+            "Les Misérables","Anna Karenina","The Master and Margarita","The Count of Monte Cristo",
+            "Fahrenheit 451","Animal Farm","The Lord of the Rings","Crime and Punishment",
+            "Don Quixote","The Brothers Karamazov","My Name Is Red","The Little Prince",
+            "The Grapes of Wrath","The Stranger","A Brief History of Time","The Flowers of the Island",
+            "The Picture of Dorian Gray","A Farewell to Arms","Twenty Thousand Leagues Under the Sea",
+            "Moby-Dick","The Tower","The Three Musketeers","Ali and Nino","Brave New World",
+            "To Kill a Mockingbird"
+        };
+
         public Form3()
         {
             InitializeComponent();
@@ -12,51 +26,74 @@ namespace WinFormsApp1
 
         private void Form3_Load(object sender, EventArgs e)
         {
-            label2.Text = "Xoş gəlmisiniz, " + Form1.nickname;
+            labelWelcome.Text = "Xoş gəlmisiniz, " + Form1.nickname;
 
             listBoxBooks.Items.Clear();
-            foreach (string book in Form1.Books)
-                listBoxBooks.Items.Add(book);
+            foreach (var b in Books)
+                listBoxBooks.Items.Add(b);
+
+            // İstifadəçinin kitablarını fayldan yüklə
+            string libraryFile = Form1.nickname + "_library.txt";
+            if (File.Exists(libraryFile))
+            {
+                string[] saved = File.ReadAllLines(libraryFile);
+                foreach (var b in saved)
+                    listBoxLibrary.Items.Add(b);
+            }
         }
 
-        // Add selected book to your library
-        private void button2_Click(object sender, EventArgs e)
+        private void buttonAdd_Click(object sender, EventArgs e)
         {
             if (listBoxBooks.SelectedIndex == -1)
             {
-                MessageBox.Show("Kitabi seçin.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Kitabı seçin!");
                 return;
             }
 
             string selectedBook = listBoxBooks.SelectedItem.ToString();
             if (!listBoxLibrary.Items.Contains(selectedBook))
+            {
                 listBoxLibrary.Items.Add(selectedBook);
+
+                // Fayla əlavə et
+                string libraryFile = Form1.nickname + "_library.txt";
+                File.AppendAllText(libraryFile, selectedBook + Environment.NewLine);
+            }
             else
-                MessageBox.Show("Kitab artıq kitabxanada mövcuddur.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            {
+                MessageBox.Show("Kitab artıq kitabxanada mövcuddur!");
+            }
         }
 
-        // Remove selected book from your library
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonRemove_Click(object sender, EventArgs e)
         {
             if (listBoxLibrary.SelectedIndex == -1)
             {
-                MessageBox.Show("Silinəcək kitabı seçin.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Silinəcək kitabı seçin!");
                 return;
             }
 
-            listBoxLibrary.Items.Remove(listBoxLibrary.SelectedItem);
+            string removedBook = listBoxLibrary.SelectedItem.ToString();
+            listBoxLibrary.Items.Remove(removedBook);
+
+            // Faylı yenilə
+            string libraryFile = Form1.nickname + "_library.txt";
+            File.WriteAllLines(libraryFile, listBoxLibrary.Items.Cast<string>());
         }
 
-        // Back to Login
-        private void label3_Click(object sender, EventArgs e)
+        private void labelBack_Click(object sender, EventArgs e)
         {
-            Form2 loginForm;
-            if (Application.OpenForms["Form2"] != null)
-                loginForm = (Form2)Application.OpenForms["Form2"];
-            else
-                loginForm = new Form2();
-
+            Form2 loginForm = (Form2)Application.OpenForms["Form2"];
+            if (loginForm == null) loginForm = new Form2();
             loginForm.Show();
+            this.Hide();
+        }
+
+        private void labelLogout_Click(object sender, EventArgs e)
+        {
+            Form1 regForm = (Form1)Application.OpenForms["Form1"];
+            if (regForm == null) regForm = new Form1();
+            regForm.Show();
             this.Hide();
         }
     }
