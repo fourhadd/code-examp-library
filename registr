@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -6,49 +7,86 @@ namespace WinFormsApp1
 {
     public partial class Form1 : Form
     {
-        string userFile = "users.txt";
+        public static string nickname = ""; // indiki istifadəçi
+        public static List<string> Books = new List<string>()
+        {
+            "The Hobbit",
+            "Sherlock Holmes",
+            "1984",
+            "Pride and Prejudice",
+            "Harry Potter",
+            "Les Misérables",
+            "Anna Karenina",
+            "The Master and Margarita",
+            "The Count of Monte Cristo",
+            "Fahrenheit 451",
+            "Animal Farm",
+            "The Lord of the Rings",
+            "Crime and Punishment",
+            "Don Quixote",
+            "The Brothers Karamazov",
+            "My Name Is Red",
+            "The Little Prince",
+            "The Grapes of Wrath",
+            "The Stranger",
+            "A Brief History of Time",
+            "The Flowers of the Island",
+            "The Picture of Dorian Gray",
+            "A Farewell to Arms",
+            "Twenty Thousand Leagues Under the Sea",
+            "Moby-Dick",
+            "The Tower",
+            "The Three Musketeers",
+            "Ali and Nino",
+            "Brave New World",
+            "To Kill a Mockingbird"
+        };
+
+        private string userFile = "users.txt"; // istifadəçilər faylı
 
         public Form1()
         {
             InitializeComponent();
             if (!File.Exists(userFile))
-                File.WriteAllText(userFile, "");
+                File.WriteAllText(userFile, ""); // boş fayl yarat
         }
 
-        private void buttonRegister_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
             string u = textBox1.Text.Trim();
             string p = textBox2.Text.Trim();
 
             if (u == "" || p == "")
             {
-                MessageBox.Show("Please enter both username and password.");
+                MessageBox.Show("Please enter both username and password.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            // Fayldan istifadəçi olub olmadığını yoxla
+            // Fayldan istifadəçiləri oxu
             string[] users = File.ReadAllLines(userFile);
             foreach (string line in users)
             {
-                if (line.Split(';')[0] == u)
+                string[] parts = line.Split(';');
+                if (parts.Length == 2 && parts[0] == u)
                 {
-                    MessageBox.Show("This username already exists!");
+                    MessageBox.Show("This username already exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
 
-            // Yeni user əlavə et
+            // Yeni istifadəçi əlavə et
             File.AppendAllText(userFile, u + ";" + p + Environment.NewLine);
+            nickname = u;
 
-            MessageBox.Show("Registration Successful!");
+            MessageBox.Show("Registration Successful!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             textBox1.Text = "";
             textBox2.Text = "";
         }
 
-        private void labelLogin_Click(object sender, EventArgs e)
+        private void label3_Click(object sender, EventArgs e)
         {
-            Form2 login = new Form2();
-            login.Show();
+            Form2 loginForm = new Form2();
+            loginForm.Show();
             this.Hide();
         }
     }
