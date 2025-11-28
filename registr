@@ -7,7 +7,7 @@ namespace WinFormsApp1
 {
     public partial class Form1 : Form
     {
-        public static string nickname = ""; // indiki istifadəçi
+        public static string nickname = ""; // İndiki istifadəçi
         public static List<string> Books = new List<string>()
         {
             "The Hobbit",
@@ -47,7 +47,6 @@ namespace WinFormsApp1
         public Form1()
         {
             InitializeComponent();
-
             if (!File.Exists(usersDataFile))
                 File.WriteAllText(usersDataFile, "");
         }
