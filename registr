@@ -52,10 +52,11 @@ namespace WinFormsApp1
                 File.WriteAllText(usersDataFile, "");
         }
 
-        private void buttonRegister_Click(object sender, EventArgs e)
+        // Dizayndakı button1 — Register
+        private void button1_Click(object sender, EventArgs e)
         {
-            string u = textBoxUsername.Text.Trim();
-            string p = textBoxPassword.Text.Trim();
+            string u = textBox1.Text.Trim();
+            string p = textBox2.Text.Trim();
 
             if (u == "" || p == "")
             {
@@ -63,7 +64,6 @@ namespace WinFormsApp1
                 return;
             }
 
-            // Fayldan istifadəçiləri oxu
             string[] users = File.ReadAllLines(usersDataFile);
             foreach (string line in users)
             {
@@ -75,18 +75,23 @@ namespace WinFormsApp1
                 }
             }
 
-            // Yeni istifadəçi əlavə et
             File.AppendAllText(usersDataFile, u + ";" + p + Environment.NewLine);
             nickname = u;
 
             MessageBox.Show("Registration Successful!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            textBoxUsername.Text = "";
-            textBoxPassword.Text = "";
+            textBox1.Text = "";
+            textBox2.Text = "";
         }
 
-        private void labelLogin_Click(object sender, EventArgs e)
+        // Dizayndakı label3 — Login
+        private void label3_Click(object sender, EventArgs e)
         {
-            Form2 loginForm = new Form2();
+            Form2 loginForm;
+            if (Application.OpenForms["Form2"] != null)
+                loginForm = (Form2)Application.OpenForms["Form2"];
+            else
+                loginForm = new Form2();
+
             loginForm.Show();
             this.Hide();
         }
