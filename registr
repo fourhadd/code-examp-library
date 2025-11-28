@@ -42,19 +42,20 @@ namespace WinFormsApp1
             "To Kill a Mockingbird"
         };
 
-        private string userFile = "users.txt"; // istifadəçilər faylı
+        private string userFile = "users.txt";
 
         public Form1()
         {
             InitializeComponent();
+
             if (!File.Exists(userFile))
-                File.WriteAllText(userFile, ""); // boş fayl yarat
+                File.WriteAllText(userFile, "");
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonRegister_Click(object sender, EventArgs e)
         {
-            string u = textBox1.Text.Trim();
-            string p = textBox2.Text.Trim();
+            string u = textBoxUsername.Text.Trim();
+            string p = textBoxPassword.Text.Trim();
 
             if (u == "" || p == "")
             {
@@ -79,11 +80,11 @@ namespace WinFormsApp1
             nickname = u;
 
             MessageBox.Show("Registration Successful!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            textBox1.Text = "";
-            textBox2.Text = "";
+            textBoxUsername.Text = "";
+            textBoxPassword.Text = "";
         }
 
-        private void label3_Click(object sender, EventArgs e)
+        private void labelLogin_Click(object sender, EventArgs e)
         {
             Form2 loginForm = new Form2();
             loginForm.Show();
