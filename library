@@ -1,15 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
 
 namespace WinFormsApp1
 {
     public partial class Form3 : Form
     {
-        private string libraryFile = "";
-        private List<string> userLibrary = new List<string>();
-
         public Form3()
         {
             InitializeComponent();
@@ -19,57 +14,41 @@ namespace WinFormsApp1
         {
             label2.Text = "Xoş gəlmisiniz, " + Form1.nickname;
 
-            // İstifadəçi kitabxanası faylı
-            libraryFile = "library_" + Form1.nickname + ".txt";
-
-            if (!File.Exists(libraryFile))
-                File.WriteAllText(libraryFile, ""); // boş fayl yarad
-
-            // Fayldakı kitabları oxu
-            userLibrary = new List<string>(File.ReadAllLines(libraryFile));
-
-            // Library listbox-a əlavə et
-            listBoxLibrary.Items.Clear();
-            foreach (string b in userLibrary)
-                if (!string.IsNullOrWhiteSpace(b))
-                    listBoxLibrary.Items.Add(b);
-
-            // Available Books listbox
             listBoxBooks.Items.Clear();
             foreach (string book in Form1.Books)
                 listBoxBooks.Items.Add(book);
         }
 
-        private void buttonAdd_Click(object sender, EventArgs e)
+        // Add selected book to your library
+        private void button2_Click(object sender, EventArgs e)
         {
-            if (listBoxBooks.SelectedIndex == -1) return;
-
-            string selectedBook = listBoxBooks.SelectedItem.ToString();
-
-            if (userLibrary.Contains(selectedBook))
+            if (listBoxBooks.SelectedIndex == -1)
             {
-                MessageBox.Show("Kitab artıq kitabxanadadır.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Kitabi seçin.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            userLibrary.Add(selectedBook);
-            listBoxLibrary.Items.Add(selectedBook);
-
-            File.WriteAllLines(libraryFile, userLibrary); // fayla yaz
+            string selectedBook = listBoxBooks.SelectedItem.ToString();
+            if (!listBoxLibrary.Items.Contains(selectedBook))
+                listBoxLibrary.Items.Add(selectedBook);
+            else
+                MessageBox.Show("Kitab artıq kitabxanada mövcuddur.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void buttonRemove_Click(object sender, EventArgs e)
+        // Remove selected book from your library
+        private void button1_Click(object sender, EventArgs e)
         {
-            if (listBoxLibrary.SelectedIndex == -1) return;
+            if (listBoxLibrary.SelectedIndex == -1)
+            {
+                MessageBox.Show("Silinəcək kitabı seçin.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
-            string bookToRemove = listBoxLibrary.SelectedItem.ToString();
-            userLibrary.Remove(bookToRemove);
-            listBoxLibrary.Items.Remove(bookToRemove);
-
-            File.WriteAllLines(libraryFile, userLibrary); // fayla yaz
+            listBoxLibrary.Items.Remove(listBoxLibrary.SelectedItem);
         }
 
-        private void buttonLogout_Click(object sender, EventArgs e)
+        // Back to Login
+        private void label3_Click(object sender, EventArgs e)
         {
             Form2 loginForm;
             if (Application.OpenForms["Form2"] != null)
