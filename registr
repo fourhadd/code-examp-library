@@ -1,38 +1,94 @@
-private string usersDataFile = "users.txt";
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
 
-public Form1()
+namespace WinFormsApp1
 {
-    InitializeComponent();
-    if (!File.Exists(usersDataFile))
-        File.WriteAllText(usersDataFile, "");
-}
-
-private void buttonRegister_Click(object sender, EventArgs e)
-{
-    string u = textBoxUsername.Text.Trim();
-    string p = textBoxPassword.Text.Trim();
-
-    if (u == "" || p == "")
+    public partial class Form1 : Form
     {
-        MessageBox.Show("Please enter both username and password.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        return;
-    }
-
-    string[] users = File.ReadAllLines(usersDataFile); // <- burda da dəyişdi
-    foreach (string line in users)
-    {
-        string[] parts = line.Split(';');
-        if (parts.Length == 2 && parts[0] == u)
+        public static string nickname = ""; // indiki istifadəçi
+        public static List<string> Books = new List<string>()
         {
-            MessageBox.Show("This username already exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return;
+            "The Hobbit",
+            "Sherlock Holmes",
+            "1984",
+            "Pride and Prejudice",
+            "Harry Potter",
+            "Les Misérables",
+            "Anna Karenina",
+            "The Master and Margarita",
+            "The Count of Monte Cristo",
+            "Fahrenheit 451",
+            "Animal Farm",
+            "The Lord of the Rings",
+            "Crime and Punishment",
+            "Don Quixote",
+            "The Brothers Karamazov",
+            "My Name Is Red",
+            "The Little Prince",
+            "The Grapes of Wrath",
+            "The Stranger",
+            "A Brief History of Time",
+            "The Flowers of the Island",
+            "The Picture of Dorian Gray",
+            "A Farewell to Arms",
+            "Twenty Thousand Leagues Under the Sea",
+            "Moby-Dick",
+            "The Tower",
+            "The Three Musketeers",
+            "Ali and Nino",
+            "Brave New World",
+            "To Kill a Mockingbird"
+        };
+
+        private string usersDataFile = "users.txt";
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            if (!File.Exists(usersDataFile))
+                File.WriteAllText(usersDataFile, "");
+        }
+
+        private void buttonRegister_Click(object sender, EventArgs e)
+        {
+            string u = textBoxUsername.Text.Trim();
+            string p = textBoxPassword.Text.Trim();
+
+            if (u == "" || p == "")
+            {
+                MessageBox.Show("Please enter both username and password.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Fayldan istifadəçiləri oxu
+            string[] users = File.ReadAllLines(usersDataFile);
+            foreach (string line in users)
+            {
+                string[] parts = line.Split(';');
+                if (parts.Length == 2 && parts[0] == u)
+                {
+                    MessageBox.Show("This username already exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            // Yeni istifadəçi əlavə et
+            File.AppendAllText(usersDataFile, u + ";" + p + Environment.NewLine);
+            nickname = u;
+
+            MessageBox.Show("Registration Successful!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            textBoxUsername.Text = "";
+            textBoxPassword.Text = "";
+        }
+
+        private void labelLogin_Click(object sender, EventArgs e)
+        {
+            Form2 loginForm = new Form2();
+            loginForm.Show();
+            this.Hide();
         }
     }
-
-    File.AppendAllText(usersDataFile, u + ";" + p + Environment.NewLine); // <- burda da dəyişdi
-    nickname = u;
-
-    MessageBox.Show("Registration Successful!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-    textBoxUsername.Text = "";
-    textBoxPassword.Text = "";
 }
