@@ -7,8 +7,8 @@ namespace WinFormsApp1
 {
     public partial class Form3 : Form
     {
-        string libraryFile = "";
-        List<string> userLibrary = new List<string>();
+        private string libraryFile = "";
+        private List<string> userLibrary = new List<string>();
 
         public Form3()
         {
@@ -19,18 +19,22 @@ namespace WinFormsApp1
         {
             label2.Text = "Xoş gəlmisiniz, " + Form1.nickname;
 
+            // İstifadəçi kitabxanası faylı
             libraryFile = "library_" + Form1.nickname + ".txt";
 
             if (!File.Exists(libraryFile))
-                File.WriteAllText(libraryFile, "");
+                File.WriteAllText(libraryFile, ""); // boş fayl yarad
 
+            // Fayldakı kitabları oxu
             userLibrary = new List<string>(File.ReadAllLines(libraryFile));
 
+            // Library listbox-a əlavə et
             listBoxLibrary.Items.Clear();
             foreach (string b in userLibrary)
                 if (!string.IsNullOrWhiteSpace(b))
                     listBoxLibrary.Items.Add(b);
 
+            // Available Books listbox
             listBoxBooks.Items.Clear();
             foreach (string book in Form1.Books)
                 listBoxBooks.Items.Add(book);
@@ -44,14 +48,14 @@ namespace WinFormsApp1
 
             if (userLibrary.Contains(selectedBook))
             {
-                MessageBox.Show("Kitab artıq kitabxanadadır.");
+                MessageBox.Show("Kitab artıq kitabxanadadır.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             userLibrary.Add(selectedBook);
             listBoxLibrary.Items.Add(selectedBook);
 
-            File.WriteAllLines(libraryFile, userLibrary);
+            File.WriteAllLines(libraryFile, userLibrary); // fayla yaz
         }
 
         private void buttonRemove_Click(object sender, EventArgs e)
@@ -62,13 +66,18 @@ namespace WinFormsApp1
             userLibrary.Remove(bookToRemove);
             listBoxLibrary.Items.Remove(bookToRemove);
 
-            File.WriteAllLines(libraryFile, userLibrary);
+            File.WriteAllLines(libraryFile, userLibrary); // fayla yaz
         }
 
         private void buttonLogout_Click(object sender, EventArgs e)
         {
-            Form2 login = new Form2();
-            login.Show();
+            Form2 loginForm;
+            if (Application.OpenForms["Form2"] != null)
+                loginForm = (Form2)Application.OpenForms["Form2"];
+            else
+                loginForm = new Form2();
+
+            loginForm.Show();
             this.Hide();
         }
     }
